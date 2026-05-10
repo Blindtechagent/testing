@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Account</title>
+<script src="../others/loading.js"></script>
+<link rel="stylesheet" href="../style.css">
+      <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  color: #6A0DAD;
+}
+
+#changeBox {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  border: 2px solid #6A0DAD;
+  border-radius: 5px;
+}
+
+#changeBox input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #6A0DAD;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#logout {
+  text-align: center;
+}
+    p{ color:red; font-size:20px; }
+    </style>
+</head>
+<body>
+<div class="preloader">
+    <div class="loader"></div>
+    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+  </div>
+        <div class="body">
+        <a href="javascript:history.go(-1)" style="position:fixed; top:0; left:0; display:inline-block; padding:10px; background-color:#007bff; color:#fff; text-decoration:none; border-radius:5px;">Back</a>
+<center>
+    <div id="heading-box" tabindex="0" role="heading" aria-level="1">
+<h1>Manage your Account</h1>
+    </div>
+
+                    <p id="userEmail"></p>
+                    <div class="container" id="logout">
+            <br>
+            <br>
+            <button id="UsersName" class="button" onclick="changeName()"></button>
+            <div id="changeBox">
+                <input type="text" autofocus required placeholder="Enter new name"/>
+                <button class="button" onclick="saveNewName()">Save</button>
+            </div>
+            <button class="button" onclick="logOut()">Log out</button>
+        </div>
+        <div id="announcement" role="status" aria-live="assertive"></div>
+    </center>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="../others/firebase.js"></script>
+    <script src="../others/global.js"></script>
+    <script src="./mngAccount.js"></script>
+</body>
+</html>

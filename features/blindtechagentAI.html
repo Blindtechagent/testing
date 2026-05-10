@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="../others/loading.js"></script>
+  <title>Blind tech agent AI</title>
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      background-color: #f9f9f9;
+      /* Light background for better readability */
+    }
+
+    /* Main container styling */
+    .container {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading box and header */
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #heading-box h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+      color: #333;
+    }
+
+    #refreshButton {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    #refreshButton img {
+      width: 24px;
+      height: 24px;
+    }
+
+    #refreshButton:hover {
+      transform: rotate(180deg);
+    }
+
+    /* Chat box styling */
+    .tb {
+      margin-bottom: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #f7f7f7;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Input area styling */
+    .input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      animation: bounceIn 1s ease-out;
+    }
+
+    .input-area input {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+    }
+
+    .input-area input:focus {
+      border-color: #2196F3;
+      box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+    }
+
+    .input-area button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .input-area button i {
+      font-size: 18px;
+    }
+
+    .input-area button:hover {
+      transform: scale(1.1);
+    }
+
+    /* Microphone button styling */
+    .mic-btn {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .mic-btn:hover {
+      background-color: #388E3C;
+    }
+
+    /* Send button styling */
+    .send-btn {
+      background-color: #2196F3;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .send-btn:hover {
+      background-color: #1976D2;
+    }
+
+    /* Message styling */
+    .msg1,
+    .dfm {
+      background-color: darkorange;
+      color: ghostwhite;
+      float: right;
+      clear: both;
+      display: block;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      opacity: 0;
+      animation: fadeInMessage 1s forwards;
+    }
+
+    .msg {
+      background-color: darkblue;
+      color: snow;
+      float: left;
+      clear: both;
+      display: block;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      opacity: 0;
+      animation: fadeInMessage 1s forwards;
+    }
+
+    /* Fade-in message animation */
+    @keyframes fadeInMessage {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Bounce-in effect for input area */
+    @keyframes bounceIn {
+      0% {
+        transform: translateY(3000px);
+      }
+
+      60% {
+        transform: translateY(-30px);
+      }
+
+      80% {
+        transform: translateY(10px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    /* List styling */
+    main ul {
+      list-style-type: disc;
+      margin-left: 20px;
+      color: #666;
+    }
+
+    main li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="preloader">
+    <div class="loader"></div>
+    <p id="loading-text" tbindex="0" autofocus aria-live="assertive">LOADING</p>
+  </div>
+  <div class="body">
+    <header>
+      <a class="skip" href="#main">Skip to main content</a>
+      <a href="../index.html" class="link">
+        <h1 id="main-heading">BLIND TECH AGENT</h1>
+      </a>
+      <button class="menuBtn w3-display-topleft" aria-label="Open Navigation Menu" aria-expanded="false"
+        aria-controls="menuItems" aria-haspopup="true" role="menuitembutton">
+          <i class="fas fa-bars w3-display-topleft" style="margin:auto;"></i>
+      </button>
+      <nav>
+        <ul class="drawer w3-sidebar w3-bar-block w3-animate-left" id="menuItems" aria-orientation="vertical"
+          role="navigation">
+          <li>
+            <a id="loginBtn" role="menuitem" href="../menu/login.html" class="menuLinks w3-bar-item">Log in</a>
+          </li>
+          <li>
+            <a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create
+              Account</a>
+          </li>
+          <li>
+            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/about.html" class="menuLinks w3-bar-item">About us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/donateUs.html" class="menuLinks w3-bar-item">Donate us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/privacy_policy.html" class="menuLinks w3-bar-item">Privacy policy</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="header-container">
+        <img src="https://te.legra.ph/file/1456591743bc08490d50c.jpg" alt="logo of Blind Tech Agent" width="100px"
+          height="100px" class="logo">
+        <button onclick="openDialog()" class="language-button">Translate page</button>
+      </div>
+      <dialog id="dialog" role="dialog" aria-modal="true">
+        <div class="dialog-content">
+          <h2>Change the Language of Our Website</h2>
+          <p>
+            We offer multiple language options to make our website accessible to a wider audience.
+            Please select your preferred language from the dropdown menu below. Once you have made
+            your selection, click the "Close and Save Language" button to save your choice and exit this popup.
+          </p>
+        </div>
+
+        <div id="google_translate_element"></div>
+
+        <div class="dialog-footer">
+          <button onclick="closeDialog()" class="close-button">
+            Close and Save Language
+          </button>
+        </div>
+      </dialog>
+      <p>"Transforming lives with the power of technology."</p>
+    </header>
+    <nav class="w3-bar">
+      <a role="tab" href="../index.html" target="_self" class="tab">HOME</a>
+      <a role="tab" href="../features.html" target="_self" aria-label="Selected, Features"
+        class="tab w3-yellow">FEATURES
+      </a>
+      <a role="tab" href="../education.html" target="_self" class="tab">EDUCATION</a>
+      <a role="tab" href="../articles.html" target="_self" class="tab">ARTICLES</a>
+      <a role="tab" href="../games.html" target="_self" class="tab">Games</a>
+    </nav>
+    <main id="main">
+      <div class="container">
+        <div class="head">
+          <div class="info">
+            <div id="heading-box" tbindex="0">
+              <h2>Blind Tech Agent AI</h2>
+            </div>
+          </div>
+          <button id="refreshButton" aria-label="refresh chat"><img
+              src="https://graph.org/file/254b9c2cd8d64b4075eaf.jpg" alt="Refresh"></button>
+        </div>
+        <div class="tb" id="tb">
+          <div class="dfm">
+            <span>Hello! I am Blind Tech Agent AI. How can I assist you today?</span>
+          </div>
+        </div>
+        <form id="form">
+          <div class="input-area">
+            <input type="text" id="msg_text" placeholder="Enter message here" required>
+            <button type="button" id="micBtn" class="btn mic-btn" aria-label="Start voice input">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button type="submit" id="sendBtn" class="btn send-btn" aria-label="Send message">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+      </div>
+      </form>
+      <section>
+        <h2>About Blind Tech Agent AI</h2>
+        <p>
+          Discover the power of Blind Tech Agent AI. It's your smart companion for:
+        </p>
+        <ul>
+          <li>Instant answers to your questions</li>
+          <li>Effortless content generation</li>
+          <li>Engaging conversations and insights</li>
+          <li>Multilingual support</li>
+          <li>Natural language understanding</li>
+          <li>and so much more</li>
+        </ul>
+        <p>Please note that messages are generated by AI. While we strive for accuracy, Blind Tech Agent AI may
+          occasionally make mistakes. We are not responsible for the content of these messages.</p>
+        <p>
+          Whether you need assistance, generating content, or just a friendly chat, our AI is here to
+          enhance your experience. Join us in the future of technology!
+        </p>
+      </section>
+      <br><br>
+      <div id="announcement" role="status" aria-live="assertive"></div>
+
+    </main>
+    <footer class="footer">
+      <h2>Footer</h2>
+          <h3 class="footer-heading">Connect with us</h3>
+          <div class="w3-block">
+                <a href="https://youtube.com/@BlindTechAgent" class="social-icon youtube"><i class="fab fa-youtube"
+            title="Join us on YouTube"></i></a>
+                <a href="https://t.me/Blindtechagent" class="social-icon telegram"><i class="fab fa-telegram-plane"
+            title="Join us on telegram"></i></a>
+            </div>
+          <p class="text-center">&copy; 2023 Blind Tech Agent. All Rights Reserved.</p>
+    </footer>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-datbase.js"></script>
+  <script src="../others/firebase.js"></script>
+  <script src="../others/global.js"></script>
+  <script src="./AI.js"></script>
+  <script src="../others/translate.js"></script>
+  <script type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+
+</html>

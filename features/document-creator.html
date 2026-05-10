@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Creator</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="../others/loading.js"></script>
+  <style>
+    main {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      /* Light blue for better contrast */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: #ffffff;
+      /* White for clarity */
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      color: #333;
+      /* Dark gray for better readability */
+      border: 5px solid #4682b4;
+      /* Steel blue border */
+    }
+
+    main h2 {
+      color: #ff6347;
+      /* Tomato color */
+      font-weight: 900;
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      color: #4682b4;
+      /* Steel blue */
+    }
+
+    .textarea-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    #content {
+      width: 75%;
+      resize: vertical;
+      padding: 10px;
+      border: 1px solid #d3d3d3;
+      /* Light gray */
+      border-radius: 4px;
+      font-size: 1em;
+      background-color: #e6f7ff;
+      /* Very light blue */
+      color: #333;
+      /* Dark gray */
+      height: 150px;
+    }
+
+    .voice-btn {
+      width: 40px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      background-color: #4682b4;
+      /* Steel blue */
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .voice-btn:hover {
+      background-color: #ff6347;
+      /* Tomato color */
+    }
+
+    .progress-bar {
+      height: 8px;
+      background-color: #d3d3d3;
+      /* Light gray */
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+
+    .progress {
+      height: 100%;
+      background-color: #1e90ff;
+      /* Dodger blue */
+      width: 0%;
+      border-radius: 5px;
+    }
+
+    button[type="submit"] {
+      margin-top: 15px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #32cd32;
+      /* Lime green */
+      transition: background-color 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #ff6347;
+      /* Tomato color */
+    }
+
+    .counter {
+      margin: 15px 0;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      /* Dark gray */
+    }
+
+    .alert {
+      color: #333;
+      /* Dark gray */
+      font-size: 14px;
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="preloader">
+    <div class="loader"></div>
+    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+  </div>
+  <div class="body">
+    <header>
+      <a class="skip" href="#main">Skip to main content</a>
+      <a href="../index.html" class="link">
+        <h1 id="main-heading">BLIND TECH AGENT</h1>
+      </a>
+      <button class="menuBtn w3-display-topleft" aria-label="Open Navigation Menu" aria-expanded="false"
+        aria-controls="menuItems" aria-haspopup="true" role="menuitembutton">
+          <i class="fas fa-bars w3-display-topleft" style="margin:auto;"></i>
+      </button>
+      <nav>
+        <ul class="drawer w3-sidebar w3-bar-block w3-animate-left" id="menuItems" aria-orientation="vertical"
+          role="navigation">
+          <li>
+            <a id="loginBtn" role="menuitem" href="../menu/login.html" class="menuLinks w3-bar-item">Log in</a>
+          </li>
+          <li>
+            <a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create
+              Account</a>
+          </li>
+          <li>
+            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/about.html" class="menuLinks w3-bar-item">About us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/donateUs.html" class="menuLinks w3-bar-item">Donate us</a>
+          </li>
+          <li>
+            <a role="menuitem" href="../menu/privacy_policy.html" class="menuLinks w3-bar-item">Privacy policy</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="header-container">
+        <img src="https://te.legra.ph/file/1456591743bc08490d50c.jpg" alt="logo of Blind Tech Agent" width="100px"
+          height="100px" class="logo">
+        <button onclick="openDialog()" class="language-button">Translate page</button>
+      </div>
+      <dialog id="dialog" role="dialog" aria-modal="true">
+        <div class="dialog-content">
+          <h2>Change the Language of Our Website</h2>
+          <p>
+            We offer multiple language options to make our website accessible to a wider audience.
+            Please select your preferred language from the dropdown menu below. Once you have made
+            your selection, click the "Close and Save Language" button to save your choice and exit this popup.
+          </p>
+        </div>
+
+        <div id="google_translate_element"></div>
+
+        <div class="dialog-footer">
+          <button onclick="closeDialog()" class="close-button">
+            Close and Save Language
+          </button>
+        </div>
+      </dialog>
+      <p>"Transforming lives with the power of technology."</p>
+    </header>
+    <nav class="w3-bar">
+      <a role="tab" href="../index.html" target="_self" class="tab">HOME</a>
+      <a role="tab" href="../features.html" target="_self" aria-label="Selected, Features"
+        class="tab w3-yellow">FEATURES </a>
+      <a role="tab" href="../education.html" target="_self" class="tab">EDUCATION</a>
+      <a role="tab" href="../articles.html" target="_self" class="tab">ARTICLES</a>
+      <a role="tab" href="../games.html" target="_self" class="tab">Games</a>
+    </nav>
+    <main>
+      <div class="container" role="main" aria-labelledby="title">
+        <div id="heading-box" tabindex="0" role="heading">
+          <h2 id="title">Document Creator</h2>
+        </div>
+        <p>Welcome to our Document Creator tool! This handy tool lets you easily create different types of documents.
+          Just enter a name for your document, choose your preferred format, and type or speak your content into the box
+          provided.</p>
+        <p>Our Document Creator supports various formats like Word, PDF, and plain text, making it perfect for students,
+          professionals, or anyone needing to generate documents quickly. You’ll also see live updates for the
+          character, word, and line counts to help you keep track of your content.</p>
+        <p>Give it a try and create your document with ease!</p>
+        <form id="docForm" onsubmit="generate()">
+          <label for="fileName">Document Name:</label>
+          <input type="text" id="fileName" placeholder="Enter document name" aria-describedby="fileNameDesc" required>
+          <span id="fileNameDesc" class="sr-only">Enter a name for your document file.</span>
+
+          <label for="format">Select Format:</label>
+          <select id="format" aria-describedby="formatDesc">
+            <option value="docx">Word Document (DOCX)</option>
+            <option value="txt">Plain Text (TXT)</option>
+            <option value="md">Markdown (MD)</option>
+            <option value="pdf">PDF Document</option>
+          </select>
+          <span id="formatDesc" class="sr-only">Choose the format you want for your document.</span>
+
+          <label for="content">Document Content:</label>
+          <div class="textarea-wrapper">
+            <textarea id="content" placeholder="Type or use voice to input your document content"
+              aria-describedby="contentDesc" required></textarea>
+            <button type="button" class="voice-btn" onclick="startVoiceTyping()"
+              aria-label="Start Voice Typing">🎤</button>
+          </div>
+
+          <div class="counter">
+            <span id="charCount">Characters: 0</span> |
+            <span id="wordCount">Words: 0</span> |
+            <span id="lineCount">Lines: 0</span>
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+          </div>
+
+          <button type="submit">Generate Document</button>
+        </form>
+
+        <div id="message" class="alert" role="alert" aria-live="polite"></div>
+      </div>
+    </main>
+    <footer class="footer">
+      <h2>Footer</h2>
+      <h3 class="footer-heading">Connect with us</h3>
+      <div class="w3-block">
+        <a href="https://youtube.com/@BlindTechAgent" class="social-icon youtube"><i class="fab fa-youtube"
+            title="Join us on YouTube"></i></a>
+        <a href="https://t.me/Blindtechagent" class="social-icon telegram"><i class="fab fa-telegram-plane"
+            title="Join us on telegram"></i></a>
+      </div>
+      <p class="text-center">&copy; 2023 Blind Tech Agent. All Rights Reserved.</p>
+    </footer>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="../others/firebase.js"></script>
+  <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="./doc-creator.js"></script>
+  <script src="../others/translate.js"></script>
+
+  <script type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="../others/global.js"></script>
+
+</body>
+
+</html>
