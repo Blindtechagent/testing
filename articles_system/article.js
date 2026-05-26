@@ -33,10 +33,10 @@ articleRef.once('value', (snapshot) => {
             <p><strong>Category: ${article.category}</strong></p>
             <article>${article.content}</article>
             <span style="margin:20px; padding:16px; background: darkblue; color:ghostwhite;">
-                <strong>Views: ${article.viewCount}</strong>
+                <strong>Views: <span id="view-count">${article.viewCount || 0}</span></strong>
             </span>
             <span style="margin:20px; padding:16px; background: darkblue; color:ghostwhite;">
-                <strong>Shares: ${article.shareCount}</strong>
+                <strong>Shares: <span id="share-count">${article.shareCount || 0}</span></strong>
             </span>
             <span style="margin:20px; padding:16px; background: darkblue; color:ghostwhite;">
                 <strong>Comments: <span id="comment-count">0</span></strong>
@@ -141,24 +141,24 @@ articleRef.once('value', (snapshot) => {
 
 // Increment view count only if the article hasn't been viewed by the user before
 function incrementViewCount(articleId) {
+    if (!articleId) return;
     const viewedKey = `viewed_${articleId}`;
     const hasViewed = localStorage.getItem(viewedKey);
 
     if (!hasViewed) {
-        // Increment view count in Firebase if it's the user's first view
-        articleRef.transaction((article) => {
-            if (article) {
-                article.viewCount = (article.viewCount || 0) + 1;
+        articleRef.child('viewCount').transaction((currentCount) => {
+            return (currentCount || 0) + 1;
+        }).then((result) => {
+            if (result.committed) {
+                const updatedViewCount = result.snapshot.val();
+                if (article) article.viewCount = updatedViewCount;
+                const viewCountElement = document.getElementById('view-count');
+                if (viewCountElement) viewCountElement.textContent = updatedViewCount;
+                localStorage.setItem(viewedKey, 'true');
             }
-            return article;
-        }).then(() => {
-            // Store a flag in localStorage to indicate the article has been viewed
-            localStorage.setItem(viewedKey, 'true');
         }).catch((error) => {
             console.error("Error updating view count:", error);
         });
-    } else {
-        console.log("User has already viewed this article. View count will not be incremented.");
     }
 }
 
@@ -247,31 +247,38 @@ function loadComments() {
 }
 
 function incrementShareCount(articleId) {
-    const articleRef = firebase.database().ref('articles/' + articleId);
-    articleRef.transaction((article) => {
-        if (article) {
-            article.shareCount = (article.shareCount || 0) + 1;
+    if (!articleId) return;
+    articleRef.child('shareCount').transaction((currentCount) => {
+        return (currentCount || 0) + 1;
+    }).then((result) => {
+        if (result.committed) {
+            const updatedShareCount = result.snapshot.val();
+            if (article) article.shareCount = updatedShareCount;
+            const shareCountElement = document.getElementById('share-count');
+            if (shareCountElement) shareCountElement.textContent = updatedShareCount;
         }
-        return article;
     }).catch((error) => {
         console.error("Error updating share count:", error);
     });
 }
 
 function incrementLikeCount(articleId) {
+    if (!articleId) return;
     const likeID = `liked_${articleId}`;
     const hasLiked = localStorage.getItem(likeID);
 
     if (!hasLiked) {
-        articleRef.transaction((article) => {
-            if (article) {
-                article.likeCount = (article.likeCount || 0) + 1;
+        articleRef.child('likeCount').transaction((currentCount) => {
+            return (currentCount || 0) + 1;
+        }).then((result) => {
+            if (result.committed) {
+                const updatedLikeCount = result.snapshot.val();
+                if (article) article.likeCount = updatedLikeCount;
+                localStorage.setItem(likeID, 'true');
+                announce('you liked this article!');
+                const likeCountElement = document.getElementById('like-count');
+                if (likeCountElement) likeCountElement.textContent = updatedLikeCount;
             }
-            return article;
-        }).then(() => {
-            localStorage.setItem(likeID, 'true');
-            announce('you liked this article!');
-            document.getElementById('like-count').innerHTML = (article.likeCount || 0);
         }).catch((error) => {
             console.error("Error updating like count:", error);
         });
@@ -282,19 +289,22 @@ function incrementLikeCount(articleId) {
 }
 
 function incrementDislikeCount(articleId) {
+    if (!articleId) return;
     const dislikeId = `disliked_${articleId}`;
     const hasDisliked = localStorage.getItem(dislikeId);
 
     if (!hasDisliked) {
-        articleRef.transaction((article) => {
-            if (article) {
-                article.dislikeCount = (article.dislikeCount || 0) + 1;
+        articleRef.child('dislikeCount').transaction((currentCount) => {
+            return (currentCount || 0) + 1;
+        }).then((result) => {
+            if (result.committed) {
+                const updatedDislikeCount = result.snapshot.val();
+                if (article) article.dislikeCount = updatedDislikeCount;
+                localStorage.setItem(dislikeId, 'true');
+                announce('you disliked this article!');
+                const dislikeCountElement = document.getElementById('dislike-count');
+                if (dislikeCountElement) dislikeCountElement.textContent = updatedDislikeCount;
             }
-            return article;
-        }).then(() => {
-            localStorage.setItem(dislikeId, 'true');
-            announce('you disliked this article!');
-            document.getElementById('dislike-count').innerHTML = (article.dislikeCount || 0);
         }).catch((error) => {
             console.error("Error updating dislike count:", error);
         });

@@ -10,7 +10,7 @@
   <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../others/loading.js"></script>
-  <title>Image to Text Converter</title>
+  <title>Text OCR</title>
   <style>
     main {
       font-family: Arial, sans-serif;
@@ -36,6 +36,12 @@
 
     label {
       font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .file-input-wrapper {
+      margin-bottom: 20px;
     }
 
     input[type="file"] {
@@ -47,17 +53,13 @@
       color: #333;
     }
 
-    #imageInputDesc {
-      font-size: 14px;
-      color: #777;
-    }
-
     #languageSelect {
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #fff;
       color: #333;
+      margin-bottom: 20px;
     }
 
     #convertBtn {
@@ -67,6 +69,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     #statusContainer {
@@ -100,9 +103,11 @@
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
   <div class="body">
     <header>
@@ -120,7 +125,7 @@
  <a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a>
  </li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
  <li>
  <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
@@ -169,16 +174,15 @@
       </nav>
     <main id="main">
       <div id="heading-box" tabindex="0" role="heading" aria-level="2">
-        <h2>Image to Text Converter</h2>
+        <h2>Text OCR</h2>
       </div>
-      <p>Welcome to our Image to Text Converter tool! With this convenient feature, you can effortlessly transform images containing text into editable text format. Just upload your image, and the tool will handle the rest!</p>
+      <p>Welcome to our Text OCR tool! Effortlessly extract text from your images or camera capture.</p>
+      <div class="file-input-wrapper">
+        <label for="imageInput">Upload image or capture with camera:</label>
+        <input type="file" id="imageInput" accept="image/*" capture="environment">
+        <p id="imageInputDesc">Supported formats: JPEG, PNG, GIF, or SVG.</p>
+      </div>
 
-<p>Whether you're digitizing printed documents, transcribing handwritten notes, or extracting text from images, our Image to Text Converter simplifies the process. Give it a try today!</p>
-      <div>
-        <label for="imageInput">Select an image:</label>
-        <input type="file" id="imageInput" accept="image/*">
-        <p>Supported formats: JPEG, PNG, GIF, or SVG.</p>
-      </div>
       <div>
         <p>Select Language:</p>
         <select id="languageSelect">

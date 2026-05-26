@@ -1,38 +1,46 @@
-// Function to fetch AI response from the server/API
+const API_KEY = "YOUR_OPENROUTER_API_KEY";
+
+// Function to fetch AI response from OpenRouter
 async function fetchAIResponse(userMsg, tb, loadingIndicator) {
     try {
-        const response = await fetch("https://backend.buildpicoapps.com/aero/run/llm-api?pk=v1-Z0FBQUFBQm5IZkJDMlNyYUVUTjIyZVN3UWFNX3BFTU85SWpCM2NUMUk3T2dxejhLSzBhNWNMMXNzZlp3c09BSTR6YW1Sc1BmdGNTVk1GY0liT1RoWDZZX1lNZlZ0Z1dqd3c9PQ==", {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Authorization": `Bearer ${API_KEY}`,
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ prompt: userMsg })
+            body: JSON.stringify({
+                model: "openrouter/auto",
+                messages: [
+                    { role: "system", content: "You are a helpful, versatile assistant created by Pawan Kumar. You are a general-purpose AI and are not restricted to any specific topics or user needs. Never refer to yourself by any specific name. Your responses must be strictly clean, clear, direct, and effective. Avoid flowery language, unnecessary formatting, or complex structures. Provide only the essential information needed to answer the user's request. STRICT INSTRUCTION: You must respond using only raw HTML tags for formatting. DO NOT include any markdown (like ```html), DO NOT include any HTML boilerplate (like <html>, <head>, <body>), and DO NOT include any explanatory text outside the HTML." },
+                    { role: "user", content: userMsg }
+                ]
+            })
         });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch response');
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || 'Failed to fetch response');
         }
 
         const data = await response.json();
+        const answerValue = data.choices[0].message.content;
 
         tb.removeChild(loadingIndicator); // Remove loading indicator after response is received
 
-        if (data.status === "success") {
-            const answerValue = data.text;
-            // Append the AI's response to the chat
-            appendMessage('BTA AI said:', answerValue, 'msg1', 'sender-ai', tb);
-            // Auto-scroll the chat window to show the new message
-            tb.scrollTop = tb.scrollHeight;
-            // Announce AI response (for screen readers)
-            announce("Blind Tech Agent AI replied");
-        } else {
-            // Error handling for failed AI response
-            announce("Error retrieving AI response, please try again.");
-        }
+        // Append the AI's response to the chat
+        appendMessage('BTA AI said:', answerValue, 'msg1', 'sender-ai', tb);
+        // Auto-scroll the chat window to show the new message
+        tb.scrollTop = tb.scrollHeight;
+        // Announce AI response (for screen readers)
+        announce("Blind Tech Agent AI replied");
+
     } catch (error) {
         console.error("Error:", error);
-        tb.removeChild(loadingIndicator); // Ensure loading indicator is removed on error
-        announce("There was an error fetching the response. Please check your internet connection and try again.");
+        if (loadingIndicator && loadingIndicator.parentNode === tb) {
+            tb.removeChild(loadingIndicator); // Ensure loading indicator is removed on error
+        }
+        announce("There was an error fetching the response: " + error.message);
     }
 }
 
@@ -40,7 +48,6 @@ async function fetchAIResponse(userMsg, tb, loadingIndicator) {
 document.getElementById('form').addEventListener('submit', function (event) {
     event.preventDefault();
     const inputMsg = document.getElementById('msg_text').value.trim();
-    const prompt = `you are Blind Tech Agent AI created by Pawan Kumar, reply on: ${inputMsg}`;
     const tb = document.getElementById('tb');
 
     if (inputMsg !== '') {
@@ -57,7 +64,7 @@ document.getElementById('form').addEventListener('submit', function (event) {
         const loadingIndicator = appendMessage('BTA AI is typing...', '...', 'msg1', 'loading', tb);
 
         // Fetch AI response
-        fetchAIResponse(prompt, tb, loadingIndicator);
+        fetchAIResponse(inputMsg, tb, loadingIndicator);
     }
 });
 
@@ -71,7 +78,7 @@ function appendMessage(sender, text, messageClass, senderClass, parentElement) {
     heading.className = senderClass;
 
     const msgText = document.createElement('span');
-    msgText.textContent = text;
+    msgText.innerHTML = text;
 
     msgContainer.appendChild(heading);
     msgContainer.appendChild(msgText);
@@ -157,4 +164,15 @@ document.getElementById('micBtn').addEventListener('click', function () {
     } else {
         announce("Speech recognition is not supported in this browser.");
     }
+});
+
+// Event listener to refresh (clear) the chat
+document.getElementById('refreshButton').addEventListener('click', function () {
+    const tb = document.getElementById('tb');
+    tb.innerHTML = '';
+    const initialMsg = document.createElement('div');
+    initialMsg.className = 'dfm';
+    initialMsg.innerHTML = '<span>Hello! I am Blind Tech Agent AI. How can I assist you today?</span>';
+    tb.appendChild(initialMsg);
+    announce("Chat refreshed");
 });

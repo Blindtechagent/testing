@@ -69,9 +69,11 @@
 </head>
 
 <body>
+    <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
     <div class="preloader">
-        <div class="loader"></div>
-        <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+        <div class="index-loader"><div id="loaderInner"></div></div>
+        <span id="wt" aria-live="assertive">Loading</span>
+        <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
     </div>
     <div class="body">
         <header>
@@ -89,7 +91,7 @@
  <a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a>
  </li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
  <li>
  <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
@@ -175,7 +177,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="../others/firebase.js"></script>
     <script src="../others/global.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./crc.js"></script>
     <script src="../others/translate.js"></script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

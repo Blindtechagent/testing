@@ -72,9 +72,11 @@
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
   <div class="body">
     <header>
@@ -97,7 +99,7 @@
               Account</a>
           </li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
           <li>
             <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
@@ -151,7 +153,7 @@
       </div>
       <form class="container">
         <p>Please enter your birthdate below to calculate your age:</p>
-        <input type="number" id="birth-year" placeholder="Enter your birth year...">
+        <input type="number" id="birth-year" placeholder="Enter your birth year..." autocomplete="off">
         <p>Month, (for example January):</p>
         <select name="month" id="birth-month">
           <option value="1">January</option>

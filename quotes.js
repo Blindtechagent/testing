@@ -9,8 +9,7 @@ async function fetchThought() {
     thoughtElement.style.opacity = "0.5";
     
     try {
-        // Fetching random quote from DummyJSON API
-        const response = await fetch("https://dummyjson.com/quotes/random");
+        const response = await fetch("https://zenquotes.io/api/random");
         if (!response.ok) {
             throw new Error("Failed to fetch thoughts");
         }
@@ -18,8 +17,8 @@ async function fetchThought() {
         const data = await response.json();
         
         // Update UI with quote only
-        if (data && data.quote) {
-            thoughtElement.innerText = `"${data.quote}"`;
+        if (data && data.q) {
+            thoughtElement.innerText = `"${data.q}"`;
         } else {
             // If no results, show a static motivational thought
             thoughtElement.innerText = '"The only limit to our realization of tomorrow is our doubts of today."';

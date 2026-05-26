@@ -6,6 +6,26 @@
       const statusContainer = document.getElementById('statusContainer');
       const resultContainer = document.getElementById('resultContainer');
       const copyBtn = document.querySelector('.copyBtn');
+      
+      // Image Preview
+      const preview = document.createElement('img');
+      preview.id = 'imagePreview';
+      preview.style.maxWidth = '100%';
+      preview.style.marginTop = '10px';
+      preview.style.display = 'none';
+      imageInput.parentNode.appendChild(preview);
+
+      imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
       convertBtn.addEventListener('click', () => {
         if (imageInput.files && imageInput.files[0]) {
@@ -39,10 +59,17 @@
           };
         } else {
           resultContainer.textContent = "";
-          statusContainer.textContent = "Please select an image file.";
+          statusContainer.textContent = "Please select or capture an image file.";
           statusContainer.classList.add("error");
           copyBtn.style.display = "none";
         }
+      });
+
+      copyBtn.addEventListener('click', () => {
+        const text = resultContainer.textContent;
+        navigator.clipboard.writeText(text)
+          .then(() => announce("Text copied to clipboard"))
+          .catch(() => announce("Failed to copy text"));
       });
 
     });

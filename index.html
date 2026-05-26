@@ -25,13 +25,15 @@
 </head>
 
 <body>
-  <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive" role="status">LOADING</p>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
+  <div class="index-preloader">
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Welcome to</span>
+<div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome" id="b">Blind</span><span class="welcome" id="t">Tech</span><span class="welcome" id="a">Agent</span></pre></div></div>
   </div>
   <div class="body">
     <header role="header">
-      <a class="skip" href="#main" aria-label="Skip to main content"></a>
+      <a class="skip" href="#main">Skip to main content</a>
       <a href="./index.html" class="link">
         <h1 id="main-heading">BLIND TECH AGENT</h1>
       </a>

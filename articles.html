@@ -78,9 +78,11 @@
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
   <div class="body">
     <header>
@@ -217,11 +219,6 @@
       <div id="articles">
         <p>Loading Articles...</p>
       </div>
-
-      <div id="articles">
-        <!-- Articles will be dynamically generated here -->
-
-      </div>
       <div id="pagination"></div>
     </main>
 
@@ -246,8 +243,6 @@
   <script src="./others/translate.js"></script>
   <script type="text/javascript"
     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <script src="./articles/articles.js"></script>
-
 </body>
 
 </html>

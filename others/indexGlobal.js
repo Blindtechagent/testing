@@ -55,9 +55,10 @@ $(document).ready(function () {
 
 function announce(message) {
   var announcement = document.getElementById("announcement");
-  announcement.textContent = message;
-  setTimeout(function() {
-    announcement.style.display = "none";
-  }, 3000);
-  announcement.style.display = "block";
+  if (announcement) {
+    announcement.textContent = message;
+    setTimeout(function() {
+      announcement.textContent = "";
+    }, 3000);
+  }
 }

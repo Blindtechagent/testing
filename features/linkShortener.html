@@ -41,9 +41,11 @@
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
   <div class="body">
     <header>
@@ -61,7 +63,7 @@
  <a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a>
  </li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
  <li>
  <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
@@ -122,7 +124,7 @@
 
 <p>This makes it convenient to not only shorten your links but also to access them with just a click. Try it out now!</p>
 <div class="container w3-container w3-round">
-        <input type="text" id="long-url" placeholder="Enter your long URL" class="w3-input w3-border">
+        <input type="text" id="long-url" placeholder="Enter your long URL" class="w3-input w3-border" autocomplete="off">
         <select id="service" class="w3-select w3-border">
             <option value="bitly">Bitly</option>
             <option value="tinyurl">TinyURL</option>

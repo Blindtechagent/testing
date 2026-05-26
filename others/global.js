@@ -28,36 +28,44 @@ $(document).ready(function () {
     });
   }
 
-  const copyBtn = document.querySelector(".copyBtn");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", function() {
-      var text = document.querySelector(".textCopy").innerText;
-      var input = document.createElement('textarea');
-      input.value = text;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-      announce("Text copied successfully!");
+  const copyBtns = document.querySelectorAll(".copyBtn");
+  copyBtns.forEach(btn => {
+    btn.addEventListener("click", function() {
+      const parent = btn.parentElement;
+      const textCopy = parent.querySelector(".textCopy") || document.querySelector(".textCopy");
+      if (textCopy) {
+        const text = textCopy.innerText || textCopy.textContent;
+        const input = document.createElement('textarea');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        announce("Text copied successfully!");
+      }
     });
-  }
+  });
 
-  const copyTextBoxBtn = document.querySelector(".copyTextBoxBtn");
-  if (copyTextBoxBtn) {
-    copyTextBoxBtn.addEventListener("click", function() {
-      var textarea = document.querySelector(".textBoxCopy");
-      textarea.select();
-      document.execCommand("copy");
-      announce("Text copied successfully!");
+  const copyTextBoxBtns = document.querySelectorAll(".copyTextBoxBtn");
+  copyTextBoxBtns.forEach(btn => {
+    btn.addEventListener("click", function() {
+      const parent = btn.parentElement;
+      const textBoxCopy = parent.querySelector(".textBoxCopy") || document.querySelector(".textBoxCopy");
+      if (textBoxCopy) {
+        textBoxCopy.select();
+        document.execCommand("copy");
+        announce("Text copied successfully!");
+      }
     });
-  }
+  });
 });
 
 function announce(message) {
   var announcement = document.getElementById("announcement");
-  announcement.textContent = message;
-  setTimeout(function() {
-    announcement.style.display = "none";
-  }, 3000);
-  announcement.style.display = "block";
+  if (announcement) {
+    announcement.textContent = message;
+    setTimeout(function() {
+      announcement.textContent = "";
+    }, 3000);
+  }
 }

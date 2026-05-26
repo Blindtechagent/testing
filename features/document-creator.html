@@ -143,9 +143,11 @@
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
   <div class="body">
     <header>
@@ -168,7 +170,7 @@
               Account</a>
           </li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
           <li>
             <a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a>
@@ -229,9 +231,9 @@
           professionals, or anyone needing to generate documents quickly. You’ll also see live updates for the
           character, word, and line counts to help you keep track of your content.</p>
         <p>Give it a try and create your document with ease!</p>
-        <form id="docForm" onsubmit="generate()">
+        <form id="docForm" onsubmit="generate(event)">
           <label for="fileName">Document Name:</label>
-          <input type="text" id="fileName" placeholder="Enter document name" aria-describedby="fileNameDesc" required>
+          <input type="text" id="fileName" placeholder="Enter document name" aria-describedby="fileNameDesc" required autocomplete="off">
           <span id="fileNameDesc" class="sr-only">Enter a name for your document file.</span>
 
           <label for="format">Select Format:</label>

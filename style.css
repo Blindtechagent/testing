@@ -1,39 +1,131 @@
     /* styles for preloader */
-    .preloader {
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* index-preloader styles (used on all pages) */
+    .index-preloader, .preloader {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(45deg, #22A7F0, #F433FF);
+      background: midnightblue;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      z-index: 9999;
     }
 
-    .loader {
+    .index-loader, .loader {
       width: 150px;
       height: 150px;
-      border-radius: 50%;
-      border: 12px solid transparent;
-      border-top-color: #F4D03F;
-      border-right-color: #58D68D;
-      border-bottom-color: #3498DB;
-      border-left-color: #E74C3C;
-      animation: spin 2s infinite linear;
+      border-radius: 100%;
+      border: 10px solid transparent;
+      border-top-color: aquamarine;
+      border-right-color: black;
+      border-bottom-color: black;
+      border-left-color: black;
+      animation: topBorder 1s infinite linear, spin 2s infinite linear;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
+    @keyframes topBorder {
+      0%   { border-top-color: aquamarine; }
+      25%  { border-top-color: cornflowerblue; }
+      50%  { border-top-color: magenta; }
+      75%  { border-top-color: hotpink; }
+      100% { border-top-color: aquamarine; }
+    }
 
-      100% {
-        transform: rotate(360deg);
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    #loaderInner {
+      position: absolute;
+      opacity: 0.6;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      animation: colourMotion 3s infinite linear;
+    }
+
+    @keyframes colourMotion {
+      0%   { background-color: forestgreen; }
+      25%  { background-color: yellow; }
+      50%  { background-color: floralwhite; }
+      75%  { background-color: violet; }
+      100% { background-color: forestgreen; }
+    }
+
+    .welcome {
+      color: ghostwhite;
+      margin: 6px;
+      font-size: 32px;
+    }
+
+    #wt {
+      display: block;
+      text-align: center;
+      font-size: 40px;
+      font-family: elephant;
+      color: ghostwhite;
+      animation: wtShow 1.5s;
+    }
+
+    @keyframes wtShow {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #welcomeBox {
+      width: 0%;
+      background-color: snow;
+      overflow: hidden;
+      white-space: nowrap;
+      animation: progress 1.3s linear forwards;
+    }
+
+    @keyframes progress {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+
+    .welcome {
+      font-size: 40px;
+      font-family: elephant;
+      color: indigo;
+      margin: 0 8px;
+      opacity: 0;
+      display: inline-block;
+      animation: reveal 1.2s forwards;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
+
+    #b { animation-delay: 0.2s; }
+    #t { animation-delay: 0.5s; }
+    #a { animation-delay: 0.8s; }
 
     #loading-text {
       text-align: center;
@@ -163,7 +255,7 @@
     background-color: blue;
     color: white;
     }
-      Nav {
+    nav {
       display: flex;
       justify-content: space-between;
       background-color: cornflowerblue;
@@ -176,7 +268,7 @@
       text-decoration: none;
       width: 20%;
       text-align: center;
-      padding: 8px auto;
+      padding: 8px 0;
       border: none;
     }
 

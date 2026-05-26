@@ -4,23 +4,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="X-UA-Compatible" content="ie=
+  <me
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./educationalContent.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
-  <title>Computer, educational content</title>
+  <title>Audio, educational content</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="../others/loading.js"></script>
+  <style>
+    .mainLink {
+      background: #800080;
+      /* Purple background color */
+      color: #FFFF00;
+      /* Yellow text color */
+      font-size: 1em;
+      display: block;
+      text-decoration: none;
+      border: 1px solid #000;
+      margin: auto;
+      padding: 4px;
+      margin: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .mainLink:hover {
+      background: #FFA07A;
+      /* Light Salmon background color */
+      color: #800080;
+      /* Purple text color */
+    }
+
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+
+    .box {
+      background-color: cornflowerblue;
+      color: black;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 6px;
+      margin: 50px auto;
+      text-align: center;
+      width: 85vw;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: block;
+    }
+
+      </style>
 </head>
 
 <body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
   <div class="preloader">
-    <div class="loader"></div>
-    <p id="loading-text" tabindex="0" autofocus aria-live="assertive">LOADING</p>
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
   </div>
-  <div class="body">
+<div class="body">
     <header role="banner">
       <a class="skip" href="#main">Skip to main content</a>
       <h1 id="main-heading"><a href="../index.html" class="link">BLIND TECH AGENT</a></h1>
@@ -32,7 +79,7 @@
           <li><a id="loginBtn" role="menuitem" href="../menu/login.html" class="menuLinks w3-bar-item">Log in</a></li>
           <li><a id="accountBtn" role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a></li>
           <li>
-            <a role="menuitem" href="./menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
+            <a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a>
           </li>
           <li><a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a></li>
           <li><a role="menuitem" href="../menu/about.html" class="menuLinks w3-bar-item">About us</a></li>
@@ -72,24 +119,22 @@
       <a role="tab" href="../games.html" target="_self" class="tab">Games</a>
     </nav>
     <main id="main">
-      <div id="heading-box" tabindex="0" role="heading" aria-level="2">
-        <h2>Computers</h2>
-      </div>
-      <p>here you will find various topics related to computers.</p>
-
-      <div class="box">
-        <h3>Basics of computer</h3>
-        <p>This audio provides an introduction to the basics of computers, teaching the fundamentals of what a computer is, its components, hardware, software, and how they function in computing.</p>
-        <p>Recorded by: <strong>Dron chauhan</strong></p>
-        <button onclick="playAudio('https://drive.google.com/file/d/1tkoClzpJQ4pj7ygbZ1cWawmB3YFzRR96/preview?usp=sharing', this)">Play Audio</button>
-      </div>
-
-    <div class="box">
-        <h3>Basics of Screen readers</h3>This audio provides an overview of screen readers, covering what screen readers are, how they function, and their significance in enabling access to digital content for individuals with visual impairments.</p>
-        <p>Recorded by: <strong>Dron chauhan</strong></p>
-        <button onclick="playAudio('https://drive.google.com/file/d/1CJPeCKzvQ8FdiVnHpXcr6RN_lvq4HKYS/preview?usp=sharing', this)">Play Audio</button>
-      </div>
-</main>
+      <h2>Audio Education</h2>
+<p>Listen to our educational content in audio format for convenient, hands-free learning.</p>
+<p>Press play and enjoy learning anytime.</p>
+    <h3>Subjects</h3>
+    <p>Please select a subject from the categories below to start learning.</p>
+    <ul>
+      <li>
+        <a class="mainLink" href="./audio/computer.html">Computers</a>
+        <p>Dive into the world of computers and technology.</p>
+      </li>
+      <li>
+        <a class="mainLink" href="./audio/english.html">English</a>
+        <p>Enhance your language skills and fluency in English.</p>
+      </li>
+    </ul>
+    </main>
     <footer class="footer">
       <h2>Footer</h2>
       <h3 class="footer-heading">Connect with us</h3>
