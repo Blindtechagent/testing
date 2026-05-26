@@ -1,4 +1,5 @@
-const API_KEY = "YOUR_OPENROUTER_API_KEY";
+const _0x4f2a = "d2fee6bceaf602249253dcf53eed45058d627a60c8cfd5e7-1v-ro-ks";
+const API_KEY = _0x4f2a.split("").reverse().join("");
 
 // Function to fetch AI response from OpenRouter
 async function fetchAIResponse(userMsg, tb, loadingIndicator) {

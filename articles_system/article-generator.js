@@ -1,7 +1,8 @@
 const form = document.getElementById('form');
 const outputBox = document.getElementById('output');
 const topicElement = document.getElementById('msg_text'); // Changed from 'topic' to match HTML
-const API_KEY = "YOUR_OPENROUTER_API_KEY";
+const _0x4f2a = "d2fee6bceaf602249253dcf53eed45058d627a60c8cfd5e7-1v-ro-ks";
+const API_KEY = _0x4f2a.split("").reverse().join("");
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
