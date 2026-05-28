@@ -23,18 +23,19 @@ function generateImage(query) {
 
 function displayImage(apiUrl, query) {
     var imgBox = document.getElementById('imgBox');
-    imgBox.innerHTML = '<p class="loading-text">Creating your masterpiece... This usually takes 5-10 seconds.</p>';
+    imgBox.style.display = "block"; // Ensure the box is visible
+    imgBox.innerHTML = '<p class="loading-text" style="color: white; font-weight: bold;">Creating your masterpiece... This usually takes 5-10 seconds.</p>';
     
     var img = new Image();
     img.onload = function() {
-        imgBox.innerHTML = ''; // Clear previous image/loading message
+        imgBox.innerHTML = ''; // Clear loading message
         img.alt = `AI generated image: ${query}`;
         img.className = "generated-image";
         img.style.display = "block";
         img.style.margin = "20px auto";
         img.style.maxWidth = "100%";
         img.style.borderRadius = "8px";
-        img.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+        img.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
         
         imgBox.appendChild(img);
         
