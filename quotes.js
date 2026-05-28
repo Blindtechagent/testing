@@ -9,16 +9,16 @@ async function fetchThought() {
     thoughtElement.style.opacity = "0.5";
     
     try {
-        const response = await fetch("https://zenquotes.io/api/random");
+        const response = await fetch("https://dummyjson.com/quotes/random");
         if (!response.ok) {
             throw new Error("Failed to fetch thoughts");
         }
         
         const data = await response.json();
         
-        // Update UI with quote only
-        if (data && data.q) {
-            thoughtElement.innerText = `"${data.q}"`;
+        // Update UI with quote and author
+        if (data && data.quote) {
+            thoughtElement.innerText = `"${data.quote}" — ${data.author}`;
         } else {
             // If no results, show a static motivational thought
             thoughtElement.innerText = '"The only limit to our realization of tomorrow is our doubts of today."';
