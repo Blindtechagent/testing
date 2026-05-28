@@ -13,29 +13,12 @@
       const copyBtn = document.querySelector('.copyBtn');
       const preview = document.getElementById('imagePreview');
       
+      // REPLACE 'helloworld' WITH YOUR FREE API KEY FROM https://ocr.space/ocrapi
+      const API_KEY = 'helloworld'; 
+
       let selectedFile = null;
-      let worker = null;
 
-      // 1. Background Worker Pre-loading
-      async function initWorker() {
-        if (!worker) {
-          statusContainer.textContent = "Initializing OCR engine...";
-          worker = await Tesseract.createWorker({
-            logger: m => {
-              if (m.status === 'recognizing text') {
-                const progress = Math.round(m.progress * 100);
-                progressBar.style.width = progress + '%';
-                statusContainer.textContent = `Processing: ${progress}%`;
-              }
-            }
-          });
-        }
-      }
-
-      // Initialize on page load
-      initWorker().then(() => {
-        statusContainer.textContent = "Ready.";
-      });
+      statusContainer.textContent = "Ready.";
 
       if (selectImageBtn) {
         selectImageBtn.addEventListener('click', () => fileInput.click());
@@ -66,80 +49,50 @@
       if (fileInput) fileInput.addEventListener('change', handleFileSelection);
       if (cameraInput) cameraInput.addEventListener('change', handleFileSelection);
 
-      // 2. Image Pre-processing for better accuracy
-      function preprocessImage(img) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        
-        ctx.drawImage(img, 0, 0);
-        
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        for (let i = 0; i < data.length; i += 4) {
-          // Convert to grayscale
-          const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-          
-          // Basic contrast enhancement: simple thresholding
-          const threshold = 128;
-          const val = avg > threshold ? 255 : 0;
-          
-          data[i] = val;     // R
-          data[i + 1] = val; // G
-          data[i + 2] = val; // B
-        }
-        
-        ctx.putImageData(imageData, 0, 0);
-        return canvas.toDataURL();
-      }
-
       convertBtn.addEventListener('click', async () => {
-        if (selectedFile) {
-          statusContainer.textContent = "Preparing image...";
-          statusContainer.classList.remove("success", "error");
-          progressWrapper.style.display = 'block';
-          progressBar.style.width = '0%';
-
-          const reader = new FileReader();
-          reader.readAsDataURL(selectedFile);
-
-          reader.onload = () => {
-            const image = new Image();
-            image.src = reader.result;
-
-            image.onload = async () => {
-              try {
-                // Pre-process before OCR
-                const processedImageData = preprocessImage(image);
-                const selectedLanguage = languageSelect.value;
-
-                await initWorker();
-                await worker.loadLanguage(selectedLanguage);
-                await worker.initialize(selectedLanguage);
-                
-                const { data: { text } } = await worker.recognize(processedImageData);
-                
-                resultContainer.textContent = text;
-                statusContainer.textContent = "Conversion complete!";
-                statusContainer.classList.add("success");
-                copyBtn.style.display = "inline";
-                progressWrapper.style.display = 'none';
-              } catch (error) {
-                console.error('Error:', error);
-                statusContainer.textContent = "An error occurred. Please try again.";
-                statusContainer.classList.add("error");
-                copyBtn.style.display = "none";
-                progressWrapper.style.display = 'none';
-              }
-            };
-          };
-        } else {
-          resultContainer.textContent = "";
+        if (!selectedFile) {
           statusContainer.textContent = "Please select or capture an image file.";
           statusContainer.classList.add("error");
-          copyBtn.style.display = "none";
+          return;
+        }
+
+        statusContainer.textContent = "Sending to server...";
+        statusContainer.classList.remove("success", "error");
+        progressWrapper.style.display = 'block';
+        progressBar.style.width = '50%'; // Set to 50% as it's an upload
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("apikey", API_KEY);
+        formData.append("language", languageSelect.value); // eng, hin, etc.
+        formData.append("isOverlayRequired", false);
+
+        try {
+          const response = await fetch("https://api.ocr.space/parse/image", {
+            method: "POST",
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.OCRExitCode === 1) {
+            const text = result.ParsedResults[0].ParsedText;
+            resultContainer.textContent = text;
+            statusContainer.textContent = "Conversion complete!";
+            statusContainer.classList.add("success");
+            copyBtn.style.display = "inline";
+          } else {
+            console.error('OCR Error:', result.ErrorMessage);
+            statusContainer.textContent = "Error: " + (result.ErrorMessage || "Could not read image.");
+            statusContainer.classList.add("error");
+          }
+        } catch (error) {
+          console.error('Network Error:', error);
+          statusContainer.textContent = "Network error. Please check your connection.";
+          statusContainer.classList.add("error");
+        } finally {
+          progressWrapper.style.display = 'none';
+          progressBar.style.width = '0%';
         }
       });
 
