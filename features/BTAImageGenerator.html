@@ -89,11 +89,25 @@
             <p>Unleash your creativity with this tool and give shape to your imagination!</p>
             <div class="container">
                 <div class="inputArea">
-                    <label for="imgPrompt" class="w3-label">Image Prompt</label>
-                    <textarea id="imgPrompt" class="w3-input w3-border" placeholder="Describe the image you want to create. For example: 'A majestic lion in the savanna at sunset'"></textarea>
-                    <button id="generateBtn" class="btn" onclick="sendPrompt()">Generate Image</button>
+                    <div class="input-group">
+                        <label for="imgPrompt" class="w3-label">Image Prompt</label>
+                        <textarea id="imgPrompt" class="w3-input w3-border" placeholder="Describe the image you want to create. For example: 'A majestic lion in the savanna at sunset'"></textarea>
+                    </div>
+                    <div class="options-group">
+                        <label for="modelSelect" class="w3-label">Select Model</label>
+                        <select id="modelSelect" class="w3-select w3-border">
+                            <option value="flux" selected>Flux (High Quality)</option>
+                            <option value="flux-realism">Flux Realism</option>
+                            <option value="any-dark">Dark/Artistic</option>
+                            <option value="turbo">Turbo (Fast)</option>
+                        </select>
+                        <button id="generateBtn" class="btn" onclick="sendPrompt()">Generate Image</button>
+                    </div>
                 </div>
                 <div class="img-box" id="imgBox"></div>
+                <div id="downloadContainer" style="display: none; text-align: center; margin-top: 20px;">
+                    <button id="downloadBtn" class="btn download-btn">Download Image</button>
+                </div>
             </div>
             <div id="announcement" role="status" aria-live="assertive"></div>
         </main>

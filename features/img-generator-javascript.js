@@ -1,72 +1,121 @@
 function sendPrompt() {
     var input = document.getElementById('imgPrompt');
     var prompt = input.value.trim();
+    var model = document.getElementById('modelSelect').value;
+    
     if (prompt) {
-        generateImage(prompt);
-        input.value = '';
+        generateImage(prompt, model);
+        // We don't clear the input immediately so the user can see what they typed
+    } else {
+        announce("Please enter a description for the image.");
     }
 }
 
-function generateImage(query) {
+function generateImage(query, model) {
     const announcement = document.getElementById('announcement');
     const generateBtn = document.getElementById('generateBtn');
+    const imgBox = document.getElementById('imgBox');
+    const downloadContainer = document.getElementById('downloadContainer');
+
     announcement.innerText = "Generating image, please wait...";
     generateBtn.disabled = true;
+    imgBox.style.display = "block";
+    imgBox.innerHTML = '<div class="loading-container"><p class="loading-text">🎨 Creating your masterpiece...<br>Using ' + model + ' model</p></div>';
+    downloadContainer.style.display = "none";
 
-    // Use a random seed to ensure a fresh image every time
     const seed = Math.floor(Math.random() * 1000000);
-    var encodedQuery = encodeURIComponent(query);
-    // Use the modern image.pollinations.ai endpoint with extra parameters
-    var apiUrl = `https://image.pollinations.ai/prompt/${encodedQuery}?seed=${seed}&width=1024&height=1024&nologo=true`;
+    const encodedQuery = encodeURIComponent(query);
+    
+    // Construct URL with model and other parameters
+    const apiUrl = `https://image.pollinations.ai/prompt/${encodedQuery}?seed=${seed}&width=1024&height=1024&model=${model}&nologo=true`;
+    
     displayImage(apiUrl, query);
 }
 
 function displayImage(apiUrl, query) {
-    var imgBox = document.getElementById('imgBox');
-    imgBox.style.display = "block"; // Ensure the box is visible
-    imgBox.innerHTML = '<p class="loading-text" style="color: white; font-weight: bold;">Creating your masterpiece... This usually takes 5-10 seconds.</p>';
+    const imgBox = document.getElementById('imgBox');
+    const announcement = document.getElementById('announcement');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadContainer = document.getElementById('downloadContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
     
-    var img = new Image();
+    const img = new Image();
+    
+    // Timeout handling
+    const timeout = setTimeout(() => {
+        if (!img.complete) {
+            img.src = ""; // Cancel loading
+            announcement.innerText = "Generation is taking longer than expected. Please try again.";
+            imgBox.innerHTML = '<p style="color: white; background: rgba(255,0,0,0.5); padding: 10px; border-radius: 5px;">Timeout: API is busy. Please try again or switch model.</p>';
+            generateBtn.disabled = false;
+        }
+    }, 30000); // 30 second timeout
+
     img.onload = function() {
-        imgBox.innerHTML = ''; // Clear loading message
-        img.alt = `AI generated image: ${query}`;
+        clearTimeout(timeout);
+        imgBox.innerHTML = '';
+        img.alt = `AI generated image for: ${query}`;
         img.className = "generated-image";
+        
+        // Apply styles directly for robustness
         img.style.display = "block";
         img.style.margin = "20px auto";
         img.style.maxWidth = "100%";
+        img.style.height = "auto";
         img.style.borderRadius = "8px";
-        img.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+        img.style.boxShadow = "0 10px 30px rgba(0,0,0,0.5)";
         
         imgBox.appendChild(img);
         
-        const announcement = document.getElementById('announcement');
         announcement.innerText = "Image generated successfully!";
-        
-        const generateBtn = document.getElementById('generateBtn');
         generateBtn.disabled = false;
         
-        // Scroll to the image
+        // Enable download
+        downloadContainer.style.display = "block";
+        downloadBtn.onclick = () => downloadImage(apiUrl, query);
+        
         imgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
+
     img.onerror = function() {
-        const announcement = document.getElementById('announcement');
-        announcement.innerText = "Failed to load the generated image. Please check your internet and try again.";
-        imgBox.innerHTML = '<p style="color: red;">Error: Could not load image.</p>';
-        const generateBtn = document.getElementById('generateBtn');
+        clearTimeout(timeout);
+        announcement.innerText = "Failed to load the image. Please check your connection.";
+        imgBox.innerHTML = '<p style="color: white; background: rgba(255,0,0,0.5); padding: 10px; border-radius: 5px;">Error: Image failed to load.</p>';
         generateBtn.disabled = false;
     };
+
     img.src = apiUrl;
 }
 
 function downloadImage(url, query) {
+    const announcement = document.getElementById('announcement');
+    announcement.innerText = "Starting download...";
+    
     fetch(url)
-        .then(response => response.blob())
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.blob();
+        })
         .then(blob => {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = query.replace(/\s+/g, '_') + '.png';
+            link.download = `BTA_AI_${query.substring(0, 20).replace(/\s+/g, '_')}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            announcement.innerText = "Download started!";
+        })
+        .catch(err => {
+            console.error('Download error:', err);
+            announcement.innerText = "Download failed. Please try right-clicking the image and 'Save As'.";
         });
+}
+
+function announce(message) {
+    const announcement = document.getElementById('announcement');
+    if (announcement) {
+        announcement.innerText = message;
+    } else {
+        alert(message);
+    }
 }
