@@ -1,8 +1,14 @@
 const form = document.getElementById('form');
 const outputBox = document.getElementById('output');
-const topicElement = document.getElementById('msg_text'); // Changed from 'topic' to match HTML
-const enAPI = "c2stb3ItdjEtN2U1ZGZjOGMwNmE3MjZkODUwNTQyZGVlM2YwY2Y2ZTFkNWY2YmFiYmNmZDM1Mjk0YTIyMDZmYWVjYjZlZWYyZA==";
-const API_KEY = atob(enAPI);
+const topicElement = document.getElementById('msg_text');
+let API_KEY = null;
+
+// Fetch API key from Firebase Realtime Database
+firebase.database().ref('config/api_keys/openrouter').on('value', (snapshot) => {
+    API_KEY = snapshot.val();
+}, (error) => {
+    console.error("Error fetching API key:", error);
+});
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -10,6 +16,11 @@ form.addEventListener('submit', async (e) => {
 
     if (!topic) {
         outputBox.innerHTML = 'Please enter a topic.';
+        return;
+    }
+
+    if (!API_KEY) {
+        outputBox.innerHTML = '<p style="color: red;">API key is not loaded yet. Please ensure it is set in the database or wait a moment.</p>';
         return;
     }
 

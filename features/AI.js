@@ -1,9 +1,19 @@
-const enAPI = "c2stb3ItdjEtN2U1ZGZjOGMwNmE3MjZkODUwNTQyZGVlM2YwY2Y2ZTFkNWY2YmFiYmNmZDM1Mjk0YTIyMDZmYWVjYjZlZWYyZA==";
-const API_KEY = atob(enAPI);
+let API_KEY = null;
+
+// Fetch API key from Firebase Realtime Database
+firebase.database().ref('config/api_keys/openrouter').on('value', (snapshot) => {
+    API_KEY = snapshot.val();
+}, (error) => {
+    console.error("Error fetching API key:", error);
+});
 
 // Function to fetch AI response from OpenRouter
 async function fetchAIResponse(userMsg, tb, loadingIndicator) {
     try {
+        if (!API_KEY) {
+            throw new Error('API key is not loaded yet. Please wait a moment or ensure it is set in the database.');
+        }
+
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {

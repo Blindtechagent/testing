@@ -1,7 +1,17 @@
-const enAPI = "c2stb3ItdjEtN2U1ZGZjOGMwNmE3MjZkODUwNTQyZGVlM2YwY2Y2ZTFkNWY2YmFiYmNmZDM1Mjk0YTIyMDZmYWVjYjZlZWYyZA==";
-const API_KEY = atob(enAPI);
+let API_KEY = null;
+
+// Fetch API key from Firebase Realtime Database
+firebase.database().ref('config/api_keys/openrouter').on('value', (snapshot) => {
+    API_KEY = snapshot.val();
+}, (error) => {
+    console.error("Error fetching API key:", error);
+});
 
 async function fetchAiChapter(topic) {
+    if (!API_KEY) {
+        alert('API key is not loaded yet. Please wait a moment.');
+        return;
+    }
     const aiStatus = document.getElementById('aiStatus');
     const generateAiBtn = document.getElementById('generateAiBtn');
     aiStatus.textContent = 'Architecting curriculum and gathering context...';
