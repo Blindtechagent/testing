@@ -13,37 +13,48 @@ function generateImage(query) {
     announcement.innerText = "Generating image, please wait...";
     generateBtn.disabled = true;
 
+    // Use a random seed to ensure a fresh image every time
+    const seed = Math.floor(Math.random() * 1000000);
     var encodedQuery = encodeURIComponent(query);
-    var apiUrl = `https://pollinations.ai/p/${encodedQuery}`;
+    // Use the modern image.pollinations.ai endpoint with extra parameters
+    var apiUrl = `https://image.pollinations.ai/prompt/${encodedQuery}?seed=${seed}&width=1024&height=1024&nologo=true`;
     displayImage(apiUrl, query);
 }
 
 function displayImage(apiUrl, query) {
     var imgBox = document.getElementById('imgBox');
+    imgBox.innerHTML = '<p class="loading-text">Creating your masterpiece... This usually takes 5-10 seconds.</p>';
+    
     var img = new Image();
     img.onload = function() {
         imgBox.innerHTML = ''; // Clear previous image/loading message
-        imgBox.appendChild(img);
-        img.alt = query;
+        img.alt = `AI generated image: ${query}`;
+        img.className = "generated-image";
         img.style.display = "block";
-        img.style.margin = "auto";
-        img.style.width = "100%";
-        img.style.height = "40vh";
-        document.getElementById('imgBox').style.display = "block";
+        img.style.margin = "20px auto";
+        img.style.maxWidth = "100%";
+        img.style.borderRadius = "8px";
+        img.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+        
+        imgBox.appendChild(img);
+        
         const announcement = document.getElementById('announcement');
         announcement.innerText = "Image generated successfully!";
-        img.focus(); // Set focus to the new image
+        
         const generateBtn = document.getElementById('generateBtn');
         generateBtn.disabled = false;
+        
+        // Scroll to the image
+        imgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
     img.onerror = function() {
         const announcement = document.getElementById('announcement');
-        announcement.innerText = "Failed to load the generated image. The API may be busy. Please try again.";
+        announcement.innerText = "Failed to load the generated image. Please check your internet and try again.";
+        imgBox.innerHTML = '<p style="color: red;">Error: Could not load image.</p>';
         const generateBtn = document.getElementById('generateBtn');
         generateBtn.disabled = false;
     };
     img.src = apiUrl;
-    imgBox.innerHTML = 'Loading image...'; // Show loading message
 }
 
 function downloadImage(url, query) {
