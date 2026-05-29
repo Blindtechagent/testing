@@ -219,6 +219,7 @@
         <div class="ocr-buttons">
           <button type="button" id="selectImageBtn" class="ocr-btn"><i class="fas fa-image"></i> Select Image</button>
           <button type="button" id="captureCameraBtn" class="ocr-btn"><i class="fas fa-camera"></i> Capture with Camera</button>
+          <button type="button" id="clearImageBtn" class="ocr-btn" style="background-color: #FF6B6B; display: none;"><i class="fas fa-trash"></i> Clear</button>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display: none;">
         <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
@@ -226,18 +227,23 @@
         <div id="previewContainer">
           <img id="imagePreview" alt="Image preview">
         </div>
-      </div>
+        </div>
 
-      <div>
-        <p>Select Language:</p>
+        <div>
+        <p>Language:</p>
         <select id="languageSelect">
+          <option value="auto">Auto-detect</option>
           <option value="eng">English</option>
           <option value="hin">Hindi</option>
         </select>
-      </div>
-      <button id="convertBtn">Convert Image to Text</button>
-      <div id="statusContainer" role="status" aria-live="polite"></div>
-      <div id="progressWrapper" style="display: none; width: 100%; max-width: 300px; background: #ddd; border-radius: 5px; margin: 10px 0;">
+        </div>
+        <button id="convertBtn">Convert Image to Text</button>
+        <div id="statusContainer" role="status" aria-live="polite"></div>
+        <div id="progressWrapper" style="display: none; width: 100%; max-width: 300px; background: #ddd; border-radius: 5px; margin: 10px auto;">
+        <div id="progressBar" style="width: 0%; height: 10px; background: #22A7F0; border-radius: 5px; transition: width 0.3s;"></div>
+        </div>
+        <div id="resultContainer" class="textCopy" style="margin-top: 20px; text-align: left; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ccc; white-space: pre-wrap; display: none;" aria-atomic="true"></div>
+
         <div id="progressBar" style="width: 0%; height: 10px; background: #22A7F0; border-radius: 5px; transition: width 0.3s;"></div>
       </div>
       <div id="resultContainer" class="textCopy" aria-atomic="true"></div>
