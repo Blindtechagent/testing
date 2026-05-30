@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="../others/loading.js"></script>
+  <title>Document Reader - Blind Tech Agent</title>
+  <style>
+    :root {
+      --primary-color: #2196F3;
+      --secondary-color: #4CAF50;
+      --accent-color: #ff9800;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+    }
+    body { background-color: var(--bg-color); }
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      max-width: 900px;
+      margin: 40px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .tool-header {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+    .upload-area {
+      border: 3px dashed #cbd5e0;
+      padding: 50px 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #fafafa;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--primary-color);
+      background-color: #ebf8ff;
+      transform: scale(1.01);
+    }
+    .file-input { display: none; }
+    
+    /* Dashboard Layout */
+    .dashboard {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    @media (min-width: 768px) {
+      .dashboard { grid-template-columns: 250px 1fr; }
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .control-box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .control-box h4 {
+      margin: 0 0 10px 0;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.05em;
+    }
+
+    /* Result View */
+    #resultContainer {
+      text-align: left;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 1.1em;
+      line-height: 1.7;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9em;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-secondary { background: var(--secondary-color); color: white; }
+    .btn-accent { background: var(--accent-color); color: white; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-ghost { background: #f1f5f9; color: #475569; }
+    .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+    /* Inputs */
+    input[type="text"], input[type="number"] {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    /* Pagination */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .status-badge {
+      background: #dcfce7;
+      color: #166534;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+
+    mark { background: #fef08a; padding: 0 2px; border-radius: 2px; }
+
+    .keyboard-hint {
+      font-size: 0.8em;
+      color: #94a3b8;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
+  <div class="preloader">
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
+  </div>
+  <div class="body">
+    <header>
+      <a class="skip" href="#main">Skip to main content</a>
+      <a href="../index.html" class="link">
+        <h1 id="main-heading">BLIND TECH AGENT</h1>
+      </a>
+      <button class="menuBtn w3-display-topleft" aria-label="Open Navigation Menu" aria-expanded="false"
+        aria-controls="menuItems" aria-haspopup="true" role="menuitembutton">
+          <i class="fas fa-bars w3-display-topleft" style="margin:auto;"></i>
+      </button>
+      <nav>
+        <ul class="drawer w3-sidebar w3-bar-block w3-animate-left" id="menuItems" aria-orientation="vertical"
+          role="navigation">
+          <li><a role="menuitem" href="../menu/login.html" class="menuLinks w3-bar-item">Log in</a></li>
+          <li><a role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a></li>
+          <li><a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a></li>
+          <li><a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a></li>
+          <li><a role="menuitem" href="../menu/about.html" class="menuLinks w3-bar-item">About us</a></li>
+          <li><a role="menuitem" href="../menu/donateUs.html" class="menuLinks w3-bar-item">Donate us</a></li>
+          <li><a role="menuitem" href="../menu/privacy_policy.html" class="menuLinks w3-bar-item">Privacy policy</a></li>
+        </ul>
+      </nav>
+      <div class="header-container">
+        <img src="https://te.legra.ph/file/1456591743bc08490d50c.jpg" alt="logo of Blind Tech Agent" width="100px" height="100px" class="logo">
+        <button onclick="openDialog()" class="language-button">Translate page</button>
+      </div>
+      <dialog id="dialog" role="dialog" aria-modal="true">
+        <div class="dialog-content">
+            <h2>Change the Language of Our Website</h2>
+            <p>
+                We offer multiple language options to make our website accessible to a wider audience. 
+                Please select your preferred language from the dropdown menu below. Once you have made 
+                your selection, click the "Close and Save Language" button to save your choice and exit this popup.
+            </p>
+        </div>
+        <div id="google_translate_element"></div>
+        <div class="dialog-footer">
+            <button onclick="closeDialog()" class="close-button">
+                Close and Save Language
+            </button>
+        </div>
+      </dialog>
+      <p>"Transforming lives with the power of technology."</p>
+    </header>
+    <nav class="w3-bar">
+      <a role="tab" href="../index.html" target="_self" class="tab">HOME</a>
+      <a role="tab" href="../features.html" target="_self" aria-label="Selected, Features" class="tab w3-yellow">FEATURES </a>
+      <a role="tab" href="../education.html" target="_self" class="tab">EDUCATION</a>
+      <a role="tab" href="../articles.html" target="_self" class="tab">ARTICLES</a>
+      <a role="tab" href="../games.html" target="_self" class="tab">Games</a>
+    </nav>
+    <main id="main">
+      <div class="container">
+        <div class="tool-header">
+          <h2><i class="fas fa-file-pdf"></i> Document Reader</h2>
+          <p>Professional-grade text extraction and reading for PDF documents.</p>
+        </div>
+        
+        <div id="upload-section">
+          <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()" aria-label="Upload PDF Area">
+            <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+            <h3 style="margin:0;">Select or Drop PDF File</h3>
+            <button class="btn btn-primary" type="button" onclick="document.getElementById('fileInput').click()">
+              <i class="fas fa-file-pdf"></i> Select PDF File
+            </button>
+            <input type="file" id="fileInput" class="file-input" accept="application/pdf">
+          </div>
+        </div>
+
+        <div id="status-container">
+          <div id="status" role="status" aria-live="polite"></div>
+          <div class="loader" id="loader"></div>
+        </div>
+
+        <!-- Tool Dashboard -->
+        <div id="dashboard" class="dashboard">
+          <aside class="sidebar">
+            <div class="control-box">
+              <h4><i class="fas fa-info-circle"></i> Document Summary</h4>
+              <p id="fileName" style="font-weight:bold; margin-bottom:5px; word-break:break-all; font-size:0.9em;"></p>
+              <span id="pageCount" class="status-badge">0 Pages</span>
+            </div>
+
+            <div class="control-box">
+              <h4><i class="fas fa-compass"></i> Page Navigation</h4>
+              <div style="display:flex; gap:5px; align-items:center;">
+                <input type="number" id="jumpInput" min="1" placeholder="Page #" aria-label="Enter page number to jump to">
+                <button class="btn btn-ghost" onclick="jumpToPage()" title="Jump to specified page">Jump</button>
+              </div>
+            </div>
+
+            <div class="control-box">
+              <h4><i class="fas fa-eye"></i> Appearance</h4>
+              <p style="font-size: 0.8em; margin-bottom: 8px;">Text Size</p>
+              <div class="button-group">
+                <button class="btn btn-ghost" onclick="adjustFontSize(2)" aria-label="Increase text size"><i class="fas fa-plus"></i></button>
+                <button class="btn btn-ghost" onclick="adjustFontSize(-2)" aria-label="Decrease text size"><i class="fas fa-minus"></i></button>
+              </div>
+            </div>
+
+            <div class="control-box">
+              <h4><i class="fas fa-search"></i> Search Document</h4>
+              <input type="text" id="globalSearchInput" placeholder="Enter keyword..." style="margin-bottom:8px;" aria-label="Search keyword in entire document">
+              <button class="btn btn-primary" style="width:100%;" onclick="searchGlobal()">
+                <i class="fas fa-search"></i> Find in Document
+              </button>
+            </div>
+          </aside>
+
+          <section class="main-panel">
+            <div class="nav-bar">
+              <button class="btn btn-secondary" id="prevBtn" onclick="changePage(-1)" aria-label="Go to previous page">
+                <i class="fas fa-chevron-left"></i> Previous Page
+              </button>
+              <span id="pageIndicator" style="font-weight: 800;">Page 1 of 1</span>
+              <button class="btn btn-secondary" id="nextBtn" onclick="changePage(1)" aria-label="Go to next page">
+                Next Page <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+
+            <div id="resultContainer" aria-label="Text content of the current page"></div>
+
+            <div class="control-box" style="background:#f8fafc;">
+              <h4><i class="fas fa-headphones"></i> Audio Controls</h4>
+              <div style="margin-bottom:15px;">
+                <label style="font-size:0.85em; font-weight:bold;">Voice Speed: <span id="speedVal">1.0</span>x</label>
+                <input type="range" id="speedRange" min="0.5" max="2.5" step="0.1" value="1.0" oninput="updateSpeed(this.value)" style="width:100%;" aria-label="Adjust reading speed">
+              </div>
+              <div class="button-group">
+                <button class="btn btn-accent" onclick="readAloud()"><i class="fas fa-play"></i> Start Reading</button>
+                <button class="btn btn-danger" onclick="stopReading()" id="stopBtn" style="display:none;"><i class="fas fa-stop"></i> Stop Audio</button>
+              </div>
+            </div>
+
+            <div class="control-box" style="background:#f8fafc;">
+              <h4><i class="fas fa-save"></i> File Actions</h4>
+              <div class="button-group">
+                <button class="btn btn-primary" onclick="copyText()"><i class="fas fa-copy"></i> Copy Page Text</button>
+                <button class="btn btn-secondary" onclick="downloadText()"><i class="fas fa-file-download"></i> Export Full Text (.txt)</button>
+                <button class="btn btn-ghost" onclick="clearAll()" style="color: #ef4444;"><i class="fas fa-times-circle"></i> Close Document</button>
+              </div>
+            </div>
+            
+            <p class="keyboard-hint">Shortcut Keys: <b>N</b> (Next), <b>P</b> (Prev), <b>R</b> (Read), <b>S</b> (Stop)</p>
+          </section>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <h2>Footer</h2>
+      <h3 class="footer-heading">Connect with us</h3>
+      <div class="w3-block">
+        <a href="https://youtube.com/@BlindTechAgent" class="social-icon youtube"><i class="fab fa-youtube"
+            title="Join us on YouTube"></i></a>
+        <a href="https://t.me/Blindtechagent" class="social-icon telegram"><i class="fab fa-telegram-plane"
+            title="Join us on telegram"></i></a>
+      </div>
+      <p class="text-center">&copy; 2026 Blind Tech Agent. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const resultContainer = document.getElementById('resultContainer');
+    const dashboard = document.getElementById('dashboard');
+    const uploadSection = document.getElementById('upload-section');
+    const pageIndicator = document.getElementById('pageIndicator');
+    
+    let pdfPages = [];
+    let currentPage = 0;
+    let readingSpeed = 1.0;
+    let fontSize = 18;
+
+    // Initialize UI
+    function updateSpeed(val) {
+      readingSpeed = parseFloat(val);
+      document.getElementById('speedVal').innerText = val;
+    }
+
+    function adjustFontSize(delta) {
+      fontSize += delta;
+      if (fontSize < 12) fontSize = 12;
+      if (fontSize > 40) fontSize = 40;
+      resultContainer.style.fontSize = fontSize + 'px';
+      announce(`Font size set to ${fontSize} pixels`);
+    }
+
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file?.type === 'application/pdf') processPDF(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) processPDF(file);
+    });
+
+    async function processPDF(file) {
+      document.getElementById('status').innerText = "Analyzing document structure...";
+      document.getElementById('loader').style.display = "block";
+      uploadSection.style.display = "none";
+      pdfPages = [];
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+        
+        document.getElementById('fileName').innerText = file.name;
+        document.getElementById('pageCount').innerText = `${pdf.numPages} Pages`;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ').trim();
+          pdfPages.push(pageText || `[Page ${i} contains no extractable text]`);
+          document.getElementById('status').innerText = `Extracting: Page ${i} of ${pdf.numPages}`;
+        }
+
+        document.getElementById('status').innerText = "";
+        document.getElementById('loader').style.display = "none";
+        dashboard.style.display = "grid";
+        displayPage(0);
+        announce(`Successfully loaded ${file.name}. Displaying Page 1.`);
+      } catch (error) {
+        alert("Could not load PDF. It might be protected or corrupted.");
+        clearAll();
+      }
+    }
+
+    function displayPage(index) {
+      if (index < 0 || index >= pdfPages.length) return;
+      currentPage = index;
+      resultContainer.innerText = pdfPages[currentPage];
+      pageIndicator.innerText = `Page ${currentPage + 1} of ${pdfPages.length}`;
+      
+      document.getElementById('prevBtn').disabled = (currentPage === 0);
+      document.getElementById('nextBtn').disabled = (currentPage === pdfPages.length - 1);
+      
+      stopReading();
+      resultContainer.scrollTop = 0;
+    }
+
+    function changePage(delta) {
+      displayPage(currentPage + delta);
+      announce(`Page ${currentPage + 1}`);
+    }
+
+    function jumpToPage() {
+      const val = parseInt(document.getElementById('jumpInput').value);
+      if (val >= 1 && val <= pdfPages.length) {
+        displayPage(val - 1);
+        announce(`Jumped to Page ${val}`);
+      } else {
+        alert(`Please enter a page between 1 and ${pdfPages.length}`);
+      }
+    }
+
+    function searchGlobal() {
+      const term = document.getElementById('globalSearchInput').value.toLowerCase();
+      if (!term) return;
+
+      const results = [];
+      pdfPages.forEach((text, i) => {
+        if (text.toLowerCase().includes(term)) results.push(i + 1);
+      });
+
+      if (results.length > 0) {
+        const first = results[0];
+        displayPage(first - 1);
+        // Highlight in current view
+        const parts = pdfPages[first-1].split(new RegExp(`(${term})`, 'gi'));
+        resultContainer.innerHTML = parts.map(p => p.toLowerCase() === term ? `<mark>${p}</mark>` : p).join('');
+        
+        announce(`Found in ${results.length} pages. Showing first result on Page ${first}. Pages with matches: ${results.join(', ')}`);
+        alert(`Found matches on pages: ${results.join(', ')}. Jumped to page ${first}.`);
+      } else {
+        alert("No matches found in the entire document.");
+      }
+    }
+
+    function copyText() {
+      navigator.clipboard.writeText(pdfPages[currentPage]).then(() => alert("Page text copied!"));
+    }
+
+    function downloadText() {
+      const fullText = pdfPages.map((t, i) => `--- Page ${i + 1} ---\n\n${t}`).join('\n\n');
+      const blob = new Blob([fullText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = "extracted_pdf_text.txt";
+      a.click(); URL.revokeObjectURL(url);
+    }
+
+    function clearAll() {
+      pdfPages = []; currentPage = 0;
+      dashboard.style.display = "none";
+      uploadSection.style.display = "block";
+      document.getElementById('status').innerText = "";
+      document.getElementById('loader').style.display = "none";
+      stopReading();
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (pdfPages.length === 0 || document.activeElement.tagName === 'INPUT') return;
+      const key = e.key.toLowerCase();
+      if (key === 'n') changePage(1);
+      if (key === 'p') changePage(-1);
+      if (key === 'r') readAloud();
+      if (key === 's') stopReading();
+    });
+
+    // Voice
+    let synth = window.speechSynthesis;
+    function readAloud() {
+      stopReading();
+      const utterance = new SpeechSynthesisUtterance(pdfPages[currentPage]);
+      utterance.rate = readingSpeed;
+      utterance.onend = () => document.getElementById('stopBtn').style.display = "none";
+      document.getElementById('stopBtn').style.display = "inline-flex";
+      synth.speak(utterance);
+    }
+    function stopReading() { synth.cancel(); document.getElementById('stopBtn').style.display = "none"; }
+    function announce(m) { document.getElementById('sr-announcer').innerText = m; }
+  </script>
+  <script src="../others/global.js"></script>
+  <script src="../others/translate.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/a5db627303.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="../others/loading.js"></script>
+  <title>PDF Compress - Blind Tech Agent</title>
+  <style>
+    :root {
+      --primary-color: #2196F3;
+      --secondary-color: #4CAF50;
+      --accent-color: #ff9800;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+    }
+    body { background-color: var(--bg-color); }
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .tool-header {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+    .upload-area {
+      border: 3px dashed #cbd5e0;
+      padding: 50px 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #fafafa;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--primary-color);
+      background-color: #ebf8ff;
+    }
+    .file-input { display: none; }
+    
+    .compress-options {
+      text-align: left;
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px;
+    }
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-danger { background: #ff4d4d; color: white; }
+    
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .result-info {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive">loading, please wait</div>
+  <div class="preloader">
+    <div class="index-loader"><div id="loaderInner"></div></div>
+    <span id="wt" aria-live="assertive">Loading</span>
+    <div id="wt-box" aria-live="polite"> <div id="welcomeBox"> <pre><span class="welcome">please wait...</span></pre></div></div>
+  </div>
+  <div class="body">
+    <header>
+      <a class="skip" href="#main">Skip to main content</a>
+      <a href="../index.html" class="link">
+        <h1 id="main-heading">BLIND TECH AGENT</h1>
+      </a>
+      <button class="menuBtn w3-display-topleft" aria-label="Open Navigation Menu" aria-expanded="false"
+        aria-controls="menuItems" aria-haspopup="true" role="menuitembutton">
+          <i class="fas fa-bars w3-display-topleft" style="margin:auto;"></i>
+      </button>
+      <nav>
+        <ul class="drawer w3-sidebar w3-bar-block w3-animate-left" id="menuItems" aria-orientation="vertical"
+          role="navigation">
+          <li><a role="menuitem" href="../menu/login.html" class="menuLinks w3-bar-item">Log in</a></li>
+          <li><a role="menuitem" href="../menu/createAccount.html" class="menuLinks w3-bar-item">Create Account</a></li>
+          <li><a role="menuitem" href="../menu/joinUs.html" class="menuLinks w3-bar-item">Join our team</a></li>
+          <li><a role="menuitem" href="../menu/contact.html" class="menuLinks w3-bar-item">Contact us</a></li>
+          <li><a role="menuitem" href="../menu/about.html" class="menuLinks w3-bar-item">About us</a></li>
+          <li><a role="menuitem" href="../menu/donateUs.html" class="menuLinks w3-bar-item">Donate us</a></li>
+          <li><a role="menuitem" href="../menu/privacy_policy.html" class="menuLinks w3-bar-item">Privacy policy</a></li>
+        </ul>
+      </nav>
+      <div class="header-container">
+        <img src="https://te.legra.ph/file/1456591743bc08490d50c.jpg" alt="logo of Blind Tech Agent" width="100px" height="100px" class="logo">
+        <button onclick="openDialog()" class="language-button">Translate page</button>
+      </div>
+      <dialog id="dialog" role="dialog" aria-modal="true">
+        <div class="dialog-content">
+            <h2>Change the Language of Our Website</h2>
+            <p>
+                We offer multiple language options to make our website accessible to a wider audience. 
+                Please select your preferred language from the dropdown menu below. Once you have made 
+                your selection, click the "Close and Save Language" button to save your choice and exit this popup.
+            </p>
+        </div>
+        <div id="google_translate_element"></div>
+        <div class="dialog-footer">
+            <button onclick="closeDialog()" class="close-button">
+                Close and Save Language
+            </button>
+        </div>
+      </dialog>
+      <p>"Transforming lives with the power of technology."</p>
+    </header>
+    <nav class="w3-bar">
+      <a role="tab" href="../index.html" target="_self" class="tab">HOME</a>
+      <a role="tab" href="../features.html" target="_self" aria-label="Selected, Features" class="tab w3-yellow">FEATURES </a>
+      <a role="tab" href="../education.html" target="_self" class="tab">EDUCATION</a>
+      <a role="tab" href="../articles.html" target="_self" class="tab">ARTICLES</a>
+      <a role="tab" href="../games.html" target="_self" class="tab">Games</a>
+    </nav>
+    <main id="main">
+      <div class="container">
+        <div class="tool-header">
+          <h2><i class="fas fa-compress-arrows-alt"></i> PDF Compress</h2>
+          <p>Reduce the file size of your PDF documents while preserving quality.</p>
+        </div>
+        
+        <div id="upload-section">
+          <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()" aria-label="Upload PDF Area">
+            <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--primary-color); margin-bottom: 15px;"></i>
+            <h3 style="margin:0;">Select or Drop a PDF File</h3>
+            <input type="file" id="fileInput" class="file-input" accept="application/pdf">
+          </div>
+        </div>
+
+        <div id="compress-section" style="display:none;">
+          <div class="compress-options">
+            <p id="fileNameDisplay" style="font-weight:bold;"></p>
+            <p id="fileSizeDisplay"></p>
+            
+            <button class="btn btn-primary" onclick="compressPDF()">
+              <i class="fas fa-file-contract"></i> Compress and Download
+            </button>
+            <button class="btn btn-danger" onclick="clearFile()">
+              <i class="fas fa-trash"></i> Change File
+            </button>
+          </div>
+        </div>
+
+        <div id="status" role="status" aria-live="polite"></div>
+        <div id="resultInfo" class="result-info"></div>
+      </div>
+    </main>
+    <footer class="footer">
+      <h2>Footer</h2>
+      <h3 class="footer-heading">Connect with us</h3>
+      <div class="w3-block">
+        <a href="https://youtube.com/@BlindTechAgent" class="social-icon youtube"><i class="fab fa-youtube"
+            title="Join us on YouTube"></i></a>
+        <a href="https://t.me/Blindtechagent" class="social-icon telegram"><i class="fab fa-telegram-plane"
+            title="Join us on telegram"></i></a>
+      </div>
+      <p class="text-center">&copy; 2026 Blind Tech Agent. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../others/firebase.js"></script>
+  <script src="../others/global.js"></script>
+  <script src="../others/translate.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="pdf_compress.js"></script>
+</body>
+</html>
